@@ -465,6 +465,8 @@ window.onload = function() {
             if (checkGameOver()) {
                 return;
             }
+
+            //TODO: special tile function here
             
             // Find clusters
             cluster = findCluster(gridpos.x, gridpos.y, true, true, false);
