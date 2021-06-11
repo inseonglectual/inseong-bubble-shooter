@@ -884,7 +884,7 @@ window.onload = function() {
     
     // Draw the bubble
     function drawBubble(x, y, index) {
-        if (index < 0 || index >= bubblecolors)
+        if (index < 0 || index > bubblecolors)
             return;
         
         // Draw the bubble sprite
@@ -948,8 +948,8 @@ window.onload = function() {
         player.bubble.y = player.y;
         player.bubble.visible = true;
         
-        //TODO: turns since special bubble or just turn number mod 6
         // Get a random type from the existing colors
+        //SET SPECIAL BUBBLE
         if (bubblenumber % 7 == 0) {
             nextcolor = 7
         } else {
