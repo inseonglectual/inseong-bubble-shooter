@@ -540,7 +540,7 @@ window.onload = function() {
         for (var i=0; i<level.columns; i++) {
             for (var j=0; j<level.rows; j++) {
                 var tile = level.tiles[i][j];
-                if (tile.type >= 0) {
+                if (tile.type >= 0 && tile.type < bubblecolors) {
                     if (!colortable[tile.type]) {
                         colortable[tile.type] = true;
                         foundcolors.push(tile.type);
@@ -884,7 +884,7 @@ window.onload = function() {
     
     // Draw the bubble
     function drawBubble(x, y, index) {
-        if (index < 0 || index > bubblecolors)
+        if (index < 0)
             return;
         
         // Draw the bubble sprite
@@ -951,14 +951,14 @@ window.onload = function() {
         // Get a random type from the existing colors
         //SET SPECIAL BUBBLE
         if (bubblenumber % 7 == 0) {
-            nextcolor = 7
+            nextcolor = 7;
         } else {
             var nextcolor = getExistingColor();
         }
-        
+        console.log(bubblenumber);
         // Set the next bubble
         player.nextbubble.tiletype = nextcolor;
-        bubblenumber++
+        bubblenumber++;
     }
     
     // Get a random existing color
