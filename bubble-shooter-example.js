@@ -26,7 +26,7 @@ window.onload = function() {
 
     
     // Number of sprites
-    var numberSprites = 4;
+    var numberSprites = 6;
     var selecttable = document.getElementById("selecttable");
     createSpriteSelect(selecttable);
     
@@ -511,12 +511,26 @@ window.onload = function() {
                 else {
                     level.tiles[gridpos.x][gridpos.y].type =  getExistingColor();
                 }
-            } else {
+            } else if(player.bubble.tiletype == 11) {
+                cluster = getNeighbors(level.tiles[gridpos.x][gridpos.y]);
+            } else if(player.bubble.tiletype == 12) {
+                neighbors = getNeighbors(level.tiles[gridpos.x][gridpos.y]);
+                newcolor = getExistingColor();
+                level.tiles[gridpos.x][gridpos.y].type = newcolor;
+                for (var i=0; i<neighbors.length; i++) {
+                    if (neighbors[i].type != -1){
+                        neighbors[i].type = newcolor
+                    }
+                }
+                cluster = findCluster(gridpos.x, gridpos.y, true, true, false);
+                console.log(cluster)
+            } 
+            else {
             // Find clusters
                 cluster = findCluster(gridpos.x, gridpos.y, true, true, false);
             }
              
-            if (cluster.length >= 3 || player.bubble.tiletype == 7 || player.bubble.tiletype == 9 || player.bubble.tiletype == 10) {
+            if (cluster.length >= 3 || player.bubble.tiletype == 7 || player.bubble.tiletype == 9 || player.bubble.tiletype == 10 || player.bubble.tiletype == 11) {
                 // Remove the cluster
                 setGameState(gamestates.removecluster);
                 return;
