@@ -480,7 +480,7 @@ window.onload = function() {
             if (player.bubble.tiletype == 7){
                 for (var i=0;i<level.columns;i++){
                     if (level.tiles[i][gridpos.y].type>=0){
-                        cluster.push(level.tiles[i][gridpos.y])
+                        cluster.push(level.tiles[i][gridpos.y]);
                     }
                 }
             } else if (player.bubble.tiletype == 8){
@@ -493,17 +493,18 @@ window.onload = function() {
                 }
             } else if (player.bubble.tiletype == 9){
                 if (intersectx != -1){
-                    cluster = [level.tiles[intersectx][intersecty], level.tiles[gridpos.x][gridpos.y]]
+                    cluster = [level.tiles[intersectx][intersecty], level.tiles[gridpos.x][gridpos.y]];
                 } else {
                     level.tiles[gridpos.x][gridpos.y].type = getExistingColor();
                 }
             } else if (player.bubble.tiletype == 10){
                 if (intersectx != -1){
-                    removedcolor = level.tiles[intersectx][intersecty].type
+                    removedcolor = level.tiles[intersectx][intersecty].type;
+                    level.tiles[gridpos.x][gridpos.y].type = removedcolor;
                     for (var i=0; i<level.columns; i++) {
                         for (var j=0; j<level.rows; j++) {
                             if (level.tiles[i][j].type == removedcolor){
-                                cluster.push(level.tiles[i][j])
+                                cluster.push(level.tiles[i][j]);
                             }
                         }
                     }
@@ -519,7 +520,7 @@ window.onload = function() {
                 level.tiles[gridpos.x][gridpos.y].type = newcolor;
                 for (var i=0; i<neighbors.length; i++) {
                     if (neighbors[i].type != -1){
-                        neighbors[i].type = newcolor
+                        neighbors[i].type = newcolor;
                     }
                 }
                 cluster = findCluster(gridpos.x, gridpos.y, true, true, false);
