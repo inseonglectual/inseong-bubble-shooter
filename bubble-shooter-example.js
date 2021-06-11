@@ -23,6 +23,12 @@ window.onload = function() {
     // Get the canvas and context
     var canvas = document.getElementById("viewport");
     var context = canvas.getContext("2d");
+
+    
+    // Number of sprites
+    var numberSprites = 2;
+    var selecttable = document.getElementById("selecttable");
+    createSpriteSelect(selecttable);
     
     // Timing and frames per second
     var lastframe = 0;
@@ -65,6 +71,7 @@ window.onload = function() {
         y: 0,
         angle: 0,
         tiletype: 0,
+        selectedSprite: 0,
         bubble: {
                     x: 0,
                     y: 0,
@@ -87,6 +94,7 @@ window.onload = function() {
     
     // Number of different colors
     var bubblecolors = 7;
+
     
     // Game states
     var gamestates = { init: 0, ready: 1, shootbubble: 2, removecluster: 3, gameover: 4 };
@@ -1073,6 +1081,37 @@ window.onload = function() {
             x: Math.round((e.clientX - rect.left)/(rect.right - rect.left)*canvas.width),
             y: Math.round((e.clientY - rect.top)/(rect.bottom - rect.top)*canvas.height)
         };
+    }
+
+    function createSpriteSelect(table) {
+        var row = table.insertRow(0);
+        console.log("hi");
+        for (i=0;i<numberSprites;i++){
+            var cell1 = row.insertCell(i);
+            cell1.innerHTML = i;
+            cell1.addEventListener('click', function(e) {
+                selectSprite(this.id)
+            }, false);
+            cell1.id = "Sprite" + i.toString();
+            if (i == 0){
+                cell1.classList.add('selected');
+            }
+            console.log(cell1)
+        }
+      }
+    
+    function selectSprite(sprite){
+        //remove selected sprite from previous sprite
+        previousSprite = document.getElementById("Sprite" + player.selectedSprite.toString());
+        previousSprite.classList.remove('selected');
+
+        //get new sprite from given id
+        var selectedSprite = parseInt(sprite.substring(6));
+        player.selectedSprite = selectedSprite;
+
+        //add selected tag to new sprite
+        var tablecell = document.getElementById(sprite);
+        tablecell.classList.add('selected');
     }
     
     // Call init to start the game
