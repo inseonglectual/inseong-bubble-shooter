@@ -38,7 +38,7 @@ window.onload = function() {
         y: 83,          // Y position
         width: 0,       // Width, gets calculated
         height: 0,      // Height, gets calculated
-        columns: 15,    // Number of tile columns
+        columns: 12,    // Number of tile columns
         rows: 14,       // Number of tile rows
         tilewidth: 40,  // Visual width of a tile
         tileheight: 40, // Visual height of a tile
@@ -97,6 +97,7 @@ window.onload = function() {
     
     var turncounter = 0;
     var rowoffset = 0;
+    var bubblenumber = 0;
     
     // Animation variables
     var animationstate = 0;
@@ -467,6 +468,7 @@ window.onload = function() {
             }
 
             //TODO: special tile function here
+            //all touching: call GetNeighbors();
             
             // Find clusters
             cluster = findCluster(gridpos.x, gridpos.y, true, true, false);
@@ -946,11 +948,17 @@ window.onload = function() {
         player.bubble.y = player.y;
         player.bubble.visible = true;
         
+        //TODO: turns since special bubble or just turn number mod 6
         // Get a random type from the existing colors
-        var nextcolor = getExistingColor();
+        if (bubblenumber % 7 == 0) {
+            nextcolor = 7
+        } else {
+            var nextcolor = getExistingColor();
+        }
         
         // Set the next bubble
         player.nextbubble.tiletype = nextcolor;
+        bubblenumber++
     }
     
     // Get a random existing color
