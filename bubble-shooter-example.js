@@ -469,11 +469,18 @@ window.onload = function() {
 
             //TODO: special tile function here
             //all touching: call GetNeighbors();
-            
+            if (player.bubble.tiletype == 7){
+                for (var i=0;i<level.columns;i++){
+                    if (level.tiles[i][gridpos.y].type>=0){
+                        cluster.push(level.tiles[i][gridpos.y])
+                    }
+                }
+            } else {
             // Find clusters
             cluster = findCluster(gridpos.x, gridpos.y, true, true, false);
-            
-            if (cluster.length >= 3) {
+            }
+             
+            if (cluster.length >= 3 || player.bubble.tiletype > 6) {
                 // Remove the cluster
                 setGameState(gamestates.removecluster);
                 return;
