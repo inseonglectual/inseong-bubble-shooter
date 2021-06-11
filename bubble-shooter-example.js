@@ -26,7 +26,7 @@ window.onload = function() {
 
     
     // Number of sprites
-    var numberSprites = 6;
+    var numberSprites = 7;
     var selecttable = document.getElementById("selecttable");
     createSpriteSelect(selecttable);
     
@@ -523,8 +523,14 @@ window.onload = function() {
                     }
                 }
                 cluster = findCluster(gridpos.x, gridpos.y, true, true, false);
-                console.log(cluster)
-            } 
+            } else if (player.bubble.tiletype == 13){
+                console.log(level.tiles)
+                for (var i=0; i<level.columns; i++) {
+                    for (var j=1; j<level.rows-1; j++) {
+                        level.tiles[i][j-1].type = level.tiles[i][j].type;
+                    }
+                }
+            }
             else {
             // Find clusters
                 cluster = findCluster(gridpos.x, gridpos.y, true, true, false);
