@@ -26,7 +26,7 @@ window.onload = function() {
 
     
     // Number of sprites
-    var numberSprites = 2;
+    var numberSprites = 4;
     var selecttable = document.getElementById("selecttable");
     createSpriteSelect(selecttable);
     
@@ -283,7 +283,7 @@ window.onload = function() {
         if (player.bubble.y <= level.y) {
             // Top collision
             player.bubble.y = level.y;
-            snapBubble();
+            snapBubble(-1,-1);
             return;
         }
         
@@ -307,7 +307,7 @@ window.onload = function() {
                                        level.radius)) {
                                         
                     // Intersection with a level bubble
-                    snapBubble();
+                    snapBubble(i,j);
                     return;
                 }
             }
@@ -424,7 +424,7 @@ window.onload = function() {
     }
     
     // Snap bubble to the grid
-    function snapBubble() {
+    function snapBubble(intersectx, intersecty) {
         // Get the grid position
         var centerx = player.bubble.x + level.tilewidth/2;
         var centery = player.bubble.y + level.tileheight/2;
@@ -483,12 +483,40 @@ window.onload = function() {
                         cluster.push(level.tiles[i][gridpos.y])
                     }
                 }
+            } else if (player.bubble.tiletype == 8){
+                if (intersectx != -1){
+                    level.tiles[gridpos.x][gridpos.y].type = level.tiles[intersectx][intersecty].type
+                    cluster = findCluster(gridpos.x, gridpos.y, true, true, false);
+                }
+                else {
+                    level.tiles[gridpos.x][gridpos.y].type =  getExistingColor();
+                }
+            } else if (player.bubble.tiletype == 9){
+                if (intersectx != -1){
+                    cluster = [level.tiles[intersectx][intersecty], level.tiles[gridpos.x][gridpos.y]]
+                } else {
+                    level.tiles[gridpos.x][gridpos.y].type = getExistingColor();
+                }
+            } else if (player.bubble.tiletype == 10){
+                if (intersectx != -1){
+                    removedcolor = level.tiles[intersectx][intersecty].type
+                    for (var i=0; i<level.columns; i++) {
+                        for (var j=0; j<level.rows; j++) {
+                            if (level.tiles[i][j].type == removedcolor){
+                                cluster.push(level.tiles[i][j])
+                            }
+                        }
+                    }
+                }
+                else {
+                    level.tiles[gridpos.x][gridpos.y].type =  getExistingColor();
+                }
             } else {
             // Find clusters
-            cluster = findCluster(gridpos.x, gridpos.y, true, true, false);
+                cluster = findCluster(gridpos.x, gridpos.y, true, true, false);
             }
              
-            if (cluster.length >= 3 || player.bubble.tiletype > 6) {
+            if (cluster.length >= 3 || player.bubble.tiletype == 7 || player.bubble.tiletype == 9 || player.bubble.tiletype == 10) {
                 // Remove the cluster
                 setGameState(gamestates.removecluster);
                 return;
@@ -966,7 +994,7 @@ window.onload = function() {
         // Get a random type from the existing colors
         //SET SPECIAL BUBBLE
         if (bubblenumber % 7 == 0) {
-            nextcolor = 7;
+            nextcolor = player.selectedSprite + 7;
         } else {
             var nextcolor = getExistingColor();
         }
