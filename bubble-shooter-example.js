@@ -161,7 +161,7 @@ window.onload = function() {
     // Initialize the game
     function init() {
         // Load images
-        images = loadImages(["bubble-sprites.png"]);
+        images = loadImages(["inseong-bubble-sprites.png"]);
         bubbleimage = images[0];
     
         // Add mouse events
