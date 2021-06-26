@@ -23,6 +23,12 @@ window.onload = function() {
     // Get the canvas and context
     var canvas = document.getElementById("viewport");
     var context = canvas.getContext("2d");
+
+    
+    // Number of sprites
+    var numberSprites = 7;
+    var selecttable = document.getElementById("selecttable");
+    createSpriteSelect(selecttable);
     
     // Timing and frames per second
     var lastframe = 0;
@@ -65,6 +71,7 @@ window.onload = function() {
         y: 0,
         angle: 0,
         tiletype: 0,
+        selectedSprite: 0,
         bubble: {
                     x: 0,
                     y: 0,
@@ -87,6 +94,7 @@ window.onload = function() {
     
     // Number of different colors
     var bubblecolors = 7;
+
     
     // Game states
     var gamestates = { init: 0, ready: 1, shootbubble: 2, removecluster: 3, gameover: 4 };
@@ -275,7 +283,7 @@ window.onload = function() {
         if (player.bubble.y <= level.y) {
             // Top collision
             player.bubble.y = level.y;
-            snapBubble();
+            snapBubble(-1,-1);
             return;
         }
         
@@ -299,7 +307,7 @@ window.onload = function() {
                                        level.radius)) {
                                         
                     // Intersection with a level bubble
-                    snapBubble();
+                    snapBubble(i,j);
                     return;
                 }
             }
@@ -416,7 +424,7 @@ window.onload = function() {
     }
     
     // Snap bubble to the grid
-    function snapBubble() {
+    function snapBubble(intersectx, intersecty) {
         // Get the grid position
         var centerx = player.bubble.x + level.tilewidth/2;
         var centery = player.bubble.y + level.tileheight/2;
@@ -469,11 +477,67 @@ window.onload = function() {
 
             //TODO: special tile function here
             //all touching: call GetNeighbors();
-            
+            if (player.bubble.tiletype == 7){
+                for (var i=0;i<level.columns;i++){
+                    if (level.tiles[i][gridpos.y].type>=0){
+                        cluster.push(level.tiles[i][gridpos.y]);
+                    }
+                }
+            } else if (player.bubble.tiletype == 8){
+                if (intersectx != -1){
+                    level.tiles[gridpos.x][gridpos.y].type = level.tiles[intersectx][intersecty].type
+                    cluster = findCluster(gridpos.x, gridpos.y, true, true, false);
+                }
+                else {
+                    level.tiles[gridpos.x][gridpos.y].type =  getExistingColor();
+                }
+            } else if (player.bubble.tiletype == 9){
+                if (intersectx != -1){
+                    cluster = [level.tiles[intersectx][intersecty], level.tiles[gridpos.x][gridpos.y]];
+                } else {
+                    level.tiles[gridpos.x][gridpos.y].type = getExistingColor();
+                }
+            } else if (player.bubble.tiletype == 10){
+                if (intersectx != -1){
+                    removedcolor = level.tiles[intersectx][intersecty].type;
+                    level.tiles[gridpos.x][gridpos.y].type = removedcolor;
+                    for (var i=0; i<level.columns; i++) {
+                        for (var j=0; j<level.rows; j++) {
+                            if (level.tiles[i][j].type == removedcolor){
+                                cluster.push(level.tiles[i][j]);
+                            }
+                        }
+                    }
+                }
+                else {
+                    level.tiles[gridpos.x][gridpos.y].type =  getExistingColor();
+                }
+            } else if(player.bubble.tiletype == 11) {
+                cluster = getNeighbors(level.tiles[gridpos.x][gridpos.y]);
+            } else if(player.bubble.tiletype == 12) {
+                neighbors = getNeighbors(level.tiles[gridpos.x][gridpos.y]);
+                newcolor = getExistingColor();
+                level.tiles[gridpos.x][gridpos.y].type = newcolor;
+                for (var i=0; i<neighbors.length; i++) {
+                    if (neighbors[i].type != -1){
+                        neighbors[i].type = newcolor;
+                    }
+                }
+                cluster = findCluster(gridpos.x, gridpos.y, true, true, false);
+            } else if (player.bubble.tiletype == 13){
+                console.log(level.tiles)
+                for (var i=0; i<level.columns; i++) {
+                    for (var j=1; j<level.rows-1; j++) {
+                        level.tiles[i][j-1].type = level.tiles[i][j].type;
+                    }
+                }
+            }
+            else {
             // Find clusters
-            cluster = findCluster(gridpos.x, gridpos.y, true, true, false);
-            
-            if (cluster.length >= 3) {
+                cluster = findCluster(gridpos.x, gridpos.y, true, true, false);
+            }
+             
+            if (cluster.length >= 3 || player.bubble.tiletype == 7 || player.bubble.tiletype == 9 || player.bubble.tiletype == 10 || player.bubble.tiletype == 11) {
                 // Remove the cluster
                 setGameState(gamestates.removecluster);
                 return;
@@ -540,7 +604,7 @@ window.onload = function() {
         for (var i=0; i<level.columns; i++) {
             for (var j=0; j<level.rows; j++) {
                 var tile = level.tiles[i][j];
-                if (tile.type >= 0) {
+                if (tile.type >= 0 && tile.type < bubblecolors) {
                     if (!colortable[tile.type]) {
                         colortable[tile.type] = true;
                         foundcolors.push(tile.type);
@@ -884,7 +948,7 @@ window.onload = function() {
     
     // Draw the bubble
     function drawBubble(x, y, index) {
-        if (index < 0 || index >= bubblecolors)
+        if (index < 0)
             return;
         
         // Draw the bubble sprite
@@ -948,17 +1012,17 @@ window.onload = function() {
         player.bubble.y = player.y;
         player.bubble.visible = true;
         
-        //TODO: turns since special bubble or just turn number mod 6
         // Get a random type from the existing colors
+        //SET SPECIAL BUBBLE
         if (bubblenumber % 7 == 0) {
-            nextcolor = 7
+            nextcolor = player.selectedSprite + 7;
         } else {
             var nextcolor = getExistingColor();
         }
-        
+        console.log(bubblenumber);
         // Set the next bubble
         player.nextbubble.tiletype = nextcolor;
-        bubblenumber++
+        bubblenumber++;
     }
     
     // Get a random existing color
@@ -1066,6 +1130,37 @@ window.onload = function() {
             x: Math.round((e.clientX - rect.left)/(rect.right - rect.left)*canvas.width),
             y: Math.round((e.clientY - rect.top)/(rect.bottom - rect.top)*canvas.height)
         };
+    }
+
+    function createSpriteSelect(table) {
+        var row = table.insertRow(0);
+        console.log("hi");
+        for (i=0;i<numberSprites;i++){
+            var cell1 = row.insertCell(i);
+            cell1.innerHTML = i;
+            cell1.addEventListener('click', function(e) {
+                selectSprite(this.id)
+            }, false);
+            cell1.id = "Sprite" + i.toString();
+            if (i == 0){
+                cell1.classList.add('selected');
+            }
+            console.log(cell1)
+        }
+      }
+    
+    function selectSprite(sprite){
+        //remove selected sprite from previous sprite
+        previousSprite = document.getElementById("Sprite" + player.selectedSprite.toString());
+        previousSprite.classList.remove('selected');
+
+        //get new sprite from given id
+        var selectedSprite = parseInt(sprite.substring(6));
+        player.selectedSprite = selectedSprite;
+
+        //add selected tag to new sprite
+        var tablecell = document.getElementById(sprite);
+        tablecell.classList.add('selected');
     }
     
     // Call init to start the game
