@@ -164,9 +164,10 @@ window.onload = function() {
     // Initialize the game
     function init() {
         // Load images
-        images = loadImages(["inseong-bubble-sprites.png", "buttons.png"]);
+        images = loadImages(["inseong-bubble-sprites.png", "buttons.png","jasonk.png"]);
         bubbleimage = images[0];
         buttonsImage = images[1];
+        wheelImage = images[2];
     
         // Add mouse events
         canvas.addEventListener("mousemove", onMouseMove);
