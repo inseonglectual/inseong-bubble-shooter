@@ -1245,6 +1245,7 @@ window.onload = function() {
     function createSpriteSelect(table) {
         var row = table.insertRow(0);
         console.log("hi");
+        console.log("is mobile2?", IS_MOBILE)
         for (i=0;i<numberSprites;i++){
             var cell1 = row.insertCell(i);
             cell1.innerHTML = i;
