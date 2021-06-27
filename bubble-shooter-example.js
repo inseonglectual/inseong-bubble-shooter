@@ -844,7 +844,7 @@ window.onload = function() {
             }
         }
         
-        
+        console.log("Rendering player")
         // Render player bubble
         renderPlayer();
 
@@ -1205,10 +1205,10 @@ window.onload = function() {
 
     function onMouseUp(e) {
         // Get the mouse position
+        console.log("up") 
         mousedownleft = false;
         mousedownright = false;
         charframecount = 19;
-        console.log("up") 
     }
 
     function isInside(pos, rect){
