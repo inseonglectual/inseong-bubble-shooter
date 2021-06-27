@@ -171,7 +171,7 @@ window.onload = function() {
     // Initialize the game
     function init() {
         // Load images
-        images = loadImages(["inseong-bubble-sprites.png", "buttons.png","jasonk.png"]);
+        images = loadImages(["inseong-bubble-sprites.png", "buttons.png","inseong-sprites.png"]);
         bubbleimage = images[0];
         buttonsImage = images[1];
         wheelimage = images[2];
@@ -853,7 +853,8 @@ window.onload = function() {
         context.drawImage(buttonsImage, 150, 0, 97, 97, player.x - 5 * level.tilewidth, player.y, level.tilewidth, level.tileheight);
         context.drawImage(buttonsImage, 300, 0, 97, 97, player.x - 4 * level.tilewidth, player.y, level.tilewidth, level.tileheight);
         console.log(charframe)
-        context.drawImage(wheelimage,2 + charframe*57, 0, 57, 82, player.x + 2 * level.tilewidth, player.y, level.tilewidth*1.2, level.tileheight*1.2)
+        context.drawImage(wheelimage,charframe*50, 0, 50, 60, player.x + 2 * level.tilewidth, player.y, level.tilewidth*1.2, level.tileheight*1.2)
+        context.drawImage(wheelimage,charframe*50, (player.selectedSprite+1)*60, 50, 60, player.x + 2 * level.tilewidth, player.y, level.tilewidth*1.2, level.tileheight*1.2)
 
         // Game Over overlay
         if (gamestate == gamestates.gameover) {
