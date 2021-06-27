@@ -1203,7 +1203,7 @@ window.onload = function() {
         // Get the mouse position
         mousedownleft = false;
         mousedownright = false;
-        charframecount = 0; 
+        charframecount = 19; 
     }
 
     function isInside(pos, rect){
