@@ -944,6 +944,7 @@ window.onload = function() {
         context.stroke();
 
         if (mousedownright == true){
+            console.log("moving right") 
             player.angle = Math.max(8, player.angle-.5);
             charframecount++;
             if (charframecount == 20) {
@@ -960,6 +961,7 @@ window.onload = function() {
             }
         }
         if (mousedownleft == true){
+            console.log("moving left") 
             player.angle = Math.min(172, player.angle+.5);
             charframecount++;
             if (charframecount == 20) {
@@ -1205,7 +1207,8 @@ window.onload = function() {
         // Get the mouse position
         mousedownleft = false;
         mousedownright = false;
-        charframecount = 19; 
+        charframecount = 19;
+        console.log("up") 
     }
 
     function isInside(pos, rect){
