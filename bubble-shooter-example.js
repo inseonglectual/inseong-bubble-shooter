@@ -25,7 +25,7 @@ window.onload = function() {
     var context = canvas.getContext("2d");
     var IS_IOS = /iPad|iPhone|iPod/.test(window.navigator.platform);
     var IS_MOBILE = /Android/.test(window.navigator.userAgent) || IS_IOS;
-
+    console.log("is mobile?", IS_MOBILE)
     
     // Number of sprites
     var numberSprites = 7;
