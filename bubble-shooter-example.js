@@ -122,6 +122,13 @@ window.onload = function() {
     var images = [];
     var bubbleimage;
     var buttonsImage;
+    var wheelimage;
+
+    //MouseDownStates
+    var mousedownright;
+    var mousedownleft;
+    var charframe = 0;
+    var charframecount = 0;
     
     // Image loading global variables
     var loadcount = 0;
@@ -167,11 +174,12 @@ window.onload = function() {
         images = loadImages(["inseong-bubble-sprites.png", "buttons.png","jasonk.png"]);
         bubbleimage = images[0];
         buttonsImage = images[1];
-        wheelImage = images[2];
+        wheelimage = images[2];
     
         // Add mouse events
         canvas.addEventListener("mousemove", onMouseMove);
         canvas.addEventListener("mousedown", onMouseDown);
+        canvas.addEventListener("mouseup", onMouseUp);
         
         // Initialize the two-dimensional tile array
         for (var i=0; i<level.columns; i++) {
@@ -844,6 +852,8 @@ window.onload = function() {
         context.drawImage(buttonsImage, 0, 0, 97, 97, player.x - 6 * level.tilewidth, player.y, level.tilewidth, level.tileheight);
         context.drawImage(buttonsImage, 150, 0, 97, 97, player.x - 5 * level.tilewidth, player.y, level.tilewidth, level.tileheight);
         context.drawImage(buttonsImage, 300, 0, 97, 97, player.x - 4 * level.tilewidth, player.y, level.tilewidth, level.tileheight);
+        console.log(charframe)
+        context.drawImage(wheelimage,2 + charframe*57, 0, 57, 82, player.x + 2 * level.tilewidth, player.y, level.tilewidth*1.2, level.tileheight*1.2)
 
         // Game Over overlay
         if (gamestate == gamestates.gameover) {
@@ -933,6 +943,30 @@ window.onload = function() {
         context.strokeStyle = "#8c8c8c";
         context.stroke();
 
+        if (mousedownright == true){
+            player.angle = Math.max(8, player.angle-.5);
+            charframecount++;
+            if (charframecount == 20) {
+                if (charframe == 2) {
+                    charframe = 3;
+                } else if (charframe == 3) {
+                    charframe = 1;
+                } else if (charframe == 1) {
+                    charframe = 2;
+                } else if (charframe == 0) {
+                    charframe = 1;
+                };
+                charframecount = 0;
+            }
+        }
+        if (mousedownleft == true){
+            player.angle = Math.min(172, player.angle+.5);
+            charframecount++;
+            if (charframecount == 20) {
+                charframe = (charframe + 1)%3 +1;
+                charframecount = 0;
+            }
+        }
         // Draw the angle
         context.lineWidth = 2;
         context.strokeStyle = "#0000ff";
@@ -1149,17 +1183,27 @@ window.onload = function() {
         // Get the mouse position
         var pos = getMousePos(canvas, e);
         if (isInside(pos,directionButtons["leftButton"])) {
-        	player.angle = Math.min(172, player.angle+2);
+            mousedownleft = true;
+        	//player.angle = Math.min(172, player.angle+2);
         }
         else if (isInside(pos,directionButtons["shootButton"])) {
         	shootBubble();
         	player.angle = 90;
+            charframe = 0;
         }
         else if (isInside(pos,directionButtons["rightButton"])) {
-        	player.angle = Math.max(8, player.angle-2);
+            mousedownright = true;
+        	//player.angle = Math.max(8, player.angle-2);
         } else if (gamestate == gamestates.gameover) {
             newGame();
         }
+    }
+
+    function onMouseUp(e) {
+        // Get the mouse position
+        mousedownleft = false;
+        mousedownright = false;
+        charframecount = 19; 
     }
 
     function isInside(pos, rect){
