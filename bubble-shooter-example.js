@@ -846,7 +846,6 @@ window.onload = function() {
             }
         }
         
-        console.log("Rendering player")
         // Render player bubble
         renderPlayer();
 
@@ -1090,7 +1089,6 @@ window.onload = function() {
         } else {
             var nextcolor = getExistingColor();
         }
-        console.log(bubblenumber);
         // Set the next bubble
         player.nextbubble.tiletype = nextcolor;
         bubblenumber++;
