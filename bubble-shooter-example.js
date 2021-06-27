@@ -852,7 +852,6 @@ window.onload = function() {
         context.drawImage(buttonsImage, 0, 0, 97, 97, player.x - 6 * level.tilewidth, player.y, level.tilewidth, level.tileheight);
         context.drawImage(buttonsImage, 150, 0, 97, 97, player.x - 5 * level.tilewidth, player.y, level.tilewidth, level.tileheight);
         context.drawImage(buttonsImage, 300, 0, 97, 97, player.x - 4 * level.tilewidth, player.y, level.tilewidth, level.tileheight);
-        console.log(charframe)
         context.drawImage(wheelimage,charframe*50, 0, 50, 60, player.x + 2 * level.tilewidth, player.y, level.tilewidth*1.2, level.tileheight*1.2)
         context.drawImage(wheelimage,charframe*50, (player.selectedSprite+1)*60, 50, 60, player.x + 2 * level.tilewidth, player.y, level.tilewidth*1.2, level.tileheight*1.2)
 
@@ -1184,6 +1183,7 @@ window.onload = function() {
         // Get the mouse position
         var pos = getMousePos(canvas, e);
         if (isInside(pos,directionButtons["leftButton"])) {
+            console.log("left")
             mousedownleft = true;
         	//player.angle = Math.min(172, player.angle+2);
         }
@@ -1193,6 +1193,7 @@ window.onload = function() {
             charframe = 0;
         }
         else if (isInside(pos,directionButtons["rightButton"])) {
+            console.log("right")
             mousedownright = true;
         	//player.angle = Math.max(8, player.angle-2);
         } else if (gamestate == gamestates.gameover) {
