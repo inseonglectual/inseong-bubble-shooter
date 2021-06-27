@@ -23,6 +23,8 @@ window.onload = function() {
     // Get the canvas and context
     var canvas = document.getElementById("viewport");
     var context = canvas.getContext("2d");
+    var IS_IOS = /iPad|iPhone|iPod/.test(window.navigator.platform);
+    var IS_MOBILE = /Android/.test(window.navigator.userAgent) || IS_IOS;
 
     
     // Number of sprites
@@ -1187,7 +1189,10 @@ window.onload = function() {
         if (isInside(pos,directionButtons["leftButton"])) {
             console.log("left")
             mousedownleft = true;
-        	//player.angle = Math.min(172, player.angle+2);
+            if (IS_MOBILE) {
+                player.angle = Math.min(172, player.angle+2);
+                charframe = (charframe + 1)%3 +1;
+            }
         }
         else if (isInside(pos,directionButtons["shootButton"])) {
         	shootBubble();
@@ -1197,6 +1202,18 @@ window.onload = function() {
         else if (isInside(pos,directionButtons["rightButton"])) {
             console.log("right")
             mousedownright = true;
+            if (IS_MOBILE){
+                player.angle = Math.max(8, player.angle-2);
+                if (charframe == 2) {
+                    charframe = 3;
+                } else if (charframe == 3) {
+                    charframe = 1;
+                } else if (charframe == 1) {
+                    charframe = 2;
+                } else if (charframe == 0) {
+                    charframe = 1;
+                };
+            }
         	//player.angle = Math.max(8, player.angle-2);
         } else if (gamestate == gamestates.gameover) {
             newGame();
