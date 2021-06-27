@@ -1203,6 +1203,7 @@ window.onload = function() {
             console.log("right")
             mousedownright = true;
             if (IS_MOBILE){
+                console.log("mobile right")
                 player.angle = Math.max(8, player.angle-2);
                 if (charframe == 2) {
                     charframe = 3;
