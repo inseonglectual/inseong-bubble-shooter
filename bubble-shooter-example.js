@@ -87,6 +87,8 @@ window.onload = function() {
                         tiletype: 0
                     }
     };
+
+    var directionButtons;
     
     // Neighbor offset table
     var neighborsoffsets = [[[1, 0], [0, 1], [-1, 1], [-1, 0], [-1, -1], [0, -1]], // Even row tiles
@@ -119,6 +121,7 @@ window.onload = function() {
     // Images
     var images = [];
     var bubbleimage;
+    var buttonsImage;
     
     // Image loading global variables
     var loadcount = 0;
@@ -161,8 +164,10 @@ window.onload = function() {
     // Initialize the game
     function init() {
         // Load images
-        images = loadImages(["inseong-bubble-sprites.png"]);
+        images = loadImages(["inseong-bubble-sprites.png", "buttons.png","jasonk.png"]);
         bubbleimage = images[0];
+        buttonsImage = images[1];
+        wheelImage = images[2];
     
         // Add mouse events
         canvas.addEventListener("mousemove", onMouseMove);
@@ -188,6 +193,27 @@ window.onload = function() {
         
         player.nextbubble.x = player.x - 2 * level.tilewidth;
         player.nextbubble.y = player.y;
+
+        directionButtons = {
+    	leftButton: {
+    		x: player.x - 6 * level.tilewidth,
+    		y: player.y,
+    		width: level.tilewidth,
+    		height: level.tileheight
+    		},
+    	shootButton: {
+    		x: player.x - 5 * level.tilewidth,
+    		y: player.y,
+    		width: level.tilewidth,
+    		height: level.tileheight
+    		},
+    	rightButton: {
+    		x: player.x - 4 * level.tilewidth,
+    		y: player.y,
+    		width: level.tilewidth,
+    		height: level.tileheight
+    	}
+    	}
         
         // New game
         newGame();
@@ -527,17 +553,18 @@ window.onload = function() {
             } else if (player.bubble.tiletype == 13){
                 console.log(level.tiles)
                 for (var i=0; i<level.columns; i++) {
-                    for (var j=1; j<level.rows-1; j++) {
-                        level.tiles[i][j-1].type = level.tiles[i][j].type;
+                    for (var j=2; j<level.rows-1; j++) {
+                        level.tiles[i][j-2].type = level.tiles[i][j].type;
                     }
                 }
+                cluster = [level.tiles[gridpos.x][gridpos.y-2]]
             }
             else {
             // Find clusters
                 cluster = findCluster(gridpos.x, gridpos.y, true, true, false);
             }
              
-            if (cluster.length >= 3 || player.bubble.tiletype == 7 || player.bubble.tiletype == 9 || player.bubble.tiletype == 10 || player.bubble.tiletype == 11) {
+            if (cluster.length >= 3 || player.bubble.tiletype == 7 || player.bubble.tiletype == 9 || player.bubble.tiletype == 10 || player.bubble.tiletype == 11 || player.bubble.tiletype == 12 || player.bubble.tiletype == 13) {
                 // Remove the cluster
                 setGameState(gamestates.removecluster);
                 return;
@@ -779,6 +806,7 @@ window.onload = function() {
         var yoffset =  level.tileheight/2;
         
         // Draw level background
+        //TODO: start here to center the level
         context.fillStyle = "#8c8c8c";
         context.fillRect(level.x - 4, level.y - 4, level.width + 8, level.height + 4 - yoffset);
         
@@ -811,7 +839,12 @@ window.onload = function() {
         
         // Render player bubble
         renderPlayer();
-        
+
+        //draw buttons in bottom left corner
+        context.drawImage(buttonsImage, 0, 0, 97, 97, player.x - 6 * level.tilewidth, player.y, level.tilewidth, level.tileheight);
+        context.drawImage(buttonsImage, 150, 0, 97, 97, player.x - 5 * level.tilewidth, player.y, level.tilewidth, level.tileheight);
+        context.drawImage(buttonsImage, 300, 0, 97, 97, player.x - 4 * level.tilewidth, player.y, level.tilewidth, level.tileheight);
+
         // Game Over overlay
         if (gamestate == gamestates.gameover) {
             context.fillStyle = "rgba(0, 0, 0, 0.8)";
@@ -1014,7 +1047,7 @@ window.onload = function() {
         
         // Get a random type from the existing colors
         //SET SPECIAL BUBBLE
-        if (bubblenumber % 7 == 0) {
+        if (bubblenumber % 7 == 0 && bubblenumber != 0) {
             nextcolor = player.selectedSprite + 7;
         } else {
             var nextcolor = getExistingColor();
@@ -1084,44 +1117,54 @@ window.onload = function() {
         // Get the mouse position
         var pos = getMousePos(canvas, e);
 
-        // Get the mouse angle
-        var mouseangle = radToDeg(Math.atan2((player.y+level.tileheight/2) - pos.y, pos.x - (player.x+level.tilewidth/2)));
+        // // Get the mouse angle
+        // var mouseangle = radToDeg(Math.atan2((player.y+level.tileheight/2) - pos.y, pos.x - (player.x+level.tilewidth/2)));
 
-        // Convert range to 0, 360 degrees
-        if (mouseangle < 0) {
-            mouseangle = 180 + (180 + mouseangle);
-        }
+        // // Convert range to 0, 360 degrees
+        // if (mouseangle < 0) {
+        //     mouseangle = 180 + (180 + mouseangle);
+        // }
 
-        // Restrict angle to 8, 172 degrees
-        var lbound = 8;
-        var ubound = 172;
-        if (mouseangle > 90 && mouseangle < 270) {
-            // Left
-            if (mouseangle > ubound) {
-                mouseangle = ubound;
-            }
-        } else {
-            // Right
-            if (mouseangle < lbound || mouseangle >= 270) {
-                mouseangle = lbound;
-            }
-        }
+        // // Restrict angle to 8, 172 degrees
+        // var lbound = 8;
+        // var ubound = 172;
+        // if (mouseangle > 90 && mouseangle < 270) {
+        //     // Left
+        //     if (mouseangle > ubound) {
+        //         mouseangle = ubound;
+        //     }
+        // } else {
+        //     // Right
+        //     if (mouseangle < lbound || mouseangle >= 270) {
+        //         mouseangle = lbound;
+        //     }
+        // }
 
-        // Set the player angle
-        player.angle = mouseangle;
+        // // Set the player angle
+        // player.angle = mouseangle;
     }
     
     // On mouse button click
     function onMouseDown(e) {
         // Get the mouse position
         var pos = getMousePos(canvas, e);
-        
-        if (gamestate == gamestates.ready) {
-            shootBubble();
+        if (isInside(pos,directionButtons["leftButton"])) {
+        	player.angle = Math.min(172, player.angle+2);
+        }
+        else if (isInside(pos,directionButtons["shootButton"])) {
+        	shootBubble();
+        	player.angle = 90;
+        }
+        else if (isInside(pos,directionButtons["rightButton"])) {
+        	player.angle = Math.max(8, player.angle-2);
         } else if (gamestate == gamestates.gameover) {
             newGame();
         }
     }
+
+    function isInside(pos, rect){
+    	return pos.x > rect.x && pos.x < rect.x+rect.width && pos.y < rect.y+rect.height && pos.y > rect.y
+	}
     
     // Get the mouse position
     function getMousePos(canvas, e) {
