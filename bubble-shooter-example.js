@@ -856,8 +856,8 @@ window.onload = function() {
         context.drawImage(buttonsImage, 300, 0, 97, 97, player.x - 4 * level.tilewidth, player.y, level.tilewidth, level.tileheight);
         // context.drawImage(wheelimage,charframe*50, 0, 50, 60, player.x + 2 * level.tilewidth, player.y, level.tilewidth*1.2, level.tileheight*1.2)
         // context.drawImage(wheelimage,charframe*50, (player.selectedSprite+1)*60, 50, 60, player.x + 2 * level.tilewidth, player.y, level.tilewidth*1.2, level.tileheight*1.2)
-		context.drawImage(wheelimage,charframe*50, 0, 50, 60, player.nextbubble.x, player.nextbubble.y, level.tilewidth*1.2, level.tileheight*1.2)
-        context.drawImage(wheelimage,charframe*50, (player.selectedSprite+1)*60, 50, 60, player.nextbubble.x, player.nextbubble.y, level.tilewidth*1.2, level.tileheight*1.2)
+		context.drawImage(wheelimage,charframe*75, 0, 75, 85, player.nextbubble.x, player.nextbubble.y, 75, 85)
+        context.drawImage(wheelimage,charframe*75, (player.selectedSprite+1)*85, 75, 85, player.nextbubble.x, player.nextbubble.y, 75, 85)
         // Game Over overlay
         if (gamestate == gamestates.gameover) {
             context.fillStyle = "rgba(0, 0, 0, 0.8)";
@@ -872,7 +872,7 @@ window.onload = function() {
     
     // Draw a frame around the game
     function drawFrame() {
-    	context.drawImage(frame,0,0,canvas.width,canvas.height);
+    	context.drawImage(frame,0,0,508,650);
     	// Draw new frame
     	// context.fillRect(0, 0, canvas.width, canvas.height);
         // // Draw background
@@ -940,14 +940,14 @@ window.onload = function() {
         var centerx = player.x + level.tilewidth/2;
         var centery = player.y + level.tileheight/2;
         
-        // Draw player background circle
-        context.fillStyle = "#7a7a7a";
-        context.beginPath();
-        context.arc(centerx, centery, level.radius+12, 0, 2*Math.PI, false);
-        context.fill();
-        context.lineWidth = 2;
-        context.strokeStyle = "#8c8c8c";
-        context.stroke();
+        // // Draw player background circle
+        // context.fillStyle = "#7a7a7a";
+        // context.beginPath();
+        // context.arc(centerx, centery, level.radius+12, 0, 2*Math.PI, false);
+        // context.fill();
+        // context.lineWidth = 2;
+        // context.strokeStyle = "#8c8c8c";
+        // context.stroke();
 
         if (mousedownright == true){
             console.log("moving right") 
