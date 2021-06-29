@@ -23,7 +23,9 @@ window.onload = function() {
     // Get the canvas and context
     var canvas = document.getElementById("viewport");
     var context = canvas.getContext("2d");
-
+    var IS_IOS = /iPad|iPhone|iPod/.test(window.navigator.platform);
+    var IS_MOBILE = /Android/.test(window.navigator.userAgent) || IS_IOS;
+    console.log("is mobile?", IS_MOBILE)
     
     // Number of sprites
     var numberSprites = 7;
@@ -122,6 +124,13 @@ window.onload = function() {
     var images = [];
     var bubbleimage;
     var buttonsImage;
+    var wheelimage;
+
+    //MouseDownStates
+    var mousedownright;
+    var mousedownleft;
+    var charframe = 0;
+    var charframecount = 0;
     
     // Image loading global variables
     var loadcount = 0;
@@ -164,14 +173,15 @@ window.onload = function() {
     // Initialize the game
     function init() {
         // Load images
-        images = loadImages(["inseong-bubble-sprites.png", "buttons.png","jasonk.png"]);
+        images = loadImages(["inseong-bubble-sprites.png", "buttons.png","inseong-sprites.png"]);
         bubbleimage = images[0];
         buttonsImage = images[1];
-        wheelImage = images[2];
+        wheelimage = images[2];
     
         // Add mouse events
         canvas.addEventListener("mousemove", onMouseMove);
         canvas.addEventListener("mousedown", onMouseDown);
+        canvas.addEventListener("mouseup", onMouseUp);
         
         // Initialize the two-dimensional tile array
         for (var i=0; i<level.columns; i++) {
@@ -836,7 +846,6 @@ window.onload = function() {
             }
         }
         
-        
         // Render player bubble
         renderPlayer();
 
@@ -844,6 +853,8 @@ window.onload = function() {
         context.drawImage(buttonsImage, 0, 0, 97, 97, player.x - 6 * level.tilewidth, player.y, level.tilewidth, level.tileheight);
         context.drawImage(buttonsImage, 150, 0, 97, 97, player.x - 5 * level.tilewidth, player.y, level.tilewidth, level.tileheight);
         context.drawImage(buttonsImage, 300, 0, 97, 97, player.x - 4 * level.tilewidth, player.y, level.tilewidth, level.tileheight);
+        context.drawImage(wheelimage,charframe*50, 0, 50, 60, player.x + 2 * level.tilewidth, player.y, level.tilewidth*1.2, level.tileheight*1.2)
+        context.drawImage(wheelimage,charframe*50, (player.selectedSprite+1)*60, 50, 60, player.x + 2 * level.tilewidth, player.y, level.tilewidth*1.2, level.tileheight*1.2)
 
         // Game Over overlay
         if (gamestate == gamestates.gameover) {
@@ -933,6 +944,32 @@ window.onload = function() {
         context.strokeStyle = "#8c8c8c";
         context.stroke();
 
+        if (mousedownright == true){
+            console.log("moving right") 
+            player.angle = Math.max(8, player.angle-.5);
+            charframecount++;
+            if (charframecount == 20) {
+                if (charframe == 2) {
+                    charframe = 3;
+                } else if (charframe == 3) {
+                    charframe = 1;
+                } else if (charframe == 1) {
+                    charframe = 2;
+                } else if (charframe == 0) {
+                    charframe = 1;
+                };
+                charframecount = 0;
+            }
+        }
+        if (mousedownleft == true){
+            console.log("moving left") 
+            player.angle = Math.min(172, player.angle+.5);
+            charframecount++;
+            if (charframecount == 20) {
+                charframe = (charframe + 1)%3 +1;
+                charframecount = 0;
+            }
+        }
         // Draw the angle
         context.lineWidth = 2;
         context.strokeStyle = "#0000ff";
@@ -1052,7 +1089,6 @@ window.onload = function() {
         } else {
             var nextcolor = getExistingColor();
         }
-        console.log(bubblenumber);
         // Set the next bubble
         player.nextbubble.tiletype = nextcolor;
         bubblenumber++;
@@ -1149,17 +1185,46 @@ window.onload = function() {
         // Get the mouse position
         var pos = getMousePos(canvas, e);
         if (isInside(pos,directionButtons["leftButton"])) {
-        	player.angle = Math.min(172, player.angle+2);
+            console.log("left")
+            mousedownleft = true;
+            if (IS_MOBILE) {
+                player.angle = Math.min(172, player.angle+2);
+                charframe = (charframe + 1)%3 +1;
+            }
         }
         else if (isInside(pos,directionButtons["shootButton"])) {
         	shootBubble();
         	player.angle = 90;
+            charframe = 0;
         }
         else if (isInside(pos,directionButtons["rightButton"])) {
-        	player.angle = Math.max(8, player.angle-2);
+            console.log("right")
+            mousedownright = true;
+            if (IS_MOBILE){
+                console.log("mobile right")
+                player.angle = Math.max(8, player.angle-2);
+                if (charframe == 2) {
+                    charframe = 3;
+                } else if (charframe == 3) {
+                    charframe = 1;
+                } else if (charframe == 1) {
+                    charframe = 2;
+                } else if (charframe == 0) {
+                    charframe = 1;
+                };
+            }
+        	//player.angle = Math.max(8, player.angle-2);
         } else if (gamestate == gamestates.gameover) {
             newGame();
         }
+    }
+
+    function onMouseUp(e) {
+        // Get the mouse position
+        console.log("up") 
+        mousedownleft = false;
+        mousedownright = false;
+        charframecount = 19;
     }
 
     function isInside(pos, rect){
@@ -1178,6 +1243,7 @@ window.onload = function() {
     function createSpriteSelect(table) {
         var row = table.insertRow(0);
         console.log("hi");
+        console.log("is mobile2?", IS_MOBILE)
         for (i=0;i<numberSprites;i++){
             var cell1 = row.insertCell(i);
             cell1.innerHTML = i;
