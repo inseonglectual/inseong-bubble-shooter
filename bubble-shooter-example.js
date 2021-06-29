@@ -173,10 +173,11 @@ window.onload = function() {
     // Initialize the game
     function init() {
         // Load images
-        images = loadImages(["inseong-bubble-sprites.png", "buttons.png","inseong-sprites.png"]);
+        images = loadImages(["inseong-bubble-sprites.png", "buttons.png","inseong-sprites.png","frame.png"]);
         bubbleimage = images[0];
         buttonsImage = images[1];
         wheelimage = images[2];
+        frame = images[3];
     
         // Add mouse events
         canvas.addEventListener("mousemove", onMouseMove);
@@ -246,19 +247,19 @@ window.onload = function() {
             // Draw the frame
             drawFrame();
             
-            // Draw a progress bar
-            var loadpercentage = loadcount/loadtotal;
-            context.strokeStyle = "#ff8080";
-            context.lineWidth=3;
-            context.strokeRect(18.5, 0.5 + canvas.height - 51, canvas.width-37, 32);
-            context.fillStyle = "#ff8080";
-            context.fillRect(18.5, 0.5 + canvas.height - 51, loadpercentage*(canvas.width-37), 32);
+            // // Draw a progress bar
+            // var loadpercentage = loadcount/loadtotal;
+            // context.strokeStyle = "#ff8080";
+            // context.lineWidth=3;
+            // context.strokeRect(18.5, 0.5 + canvas.height - 51, canvas.width-37, 32);
+            // context.fillStyle = "#ff8080";
+            // context.fillRect(18.5, 0.5 + canvas.height - 51, loadpercentage*(canvas.width-37), 32);
             
-            // Draw the progress text
-            var loadtext = "Loaded " + loadcount + "/" + loadtotal + " images";
-            context.fillStyle = "#000000";
-            context.font = "16px Verdana";
-            context.fillText(loadtext, 18, 0.5 + canvas.height - 63);
+            // // Draw the progress text
+            // var loadtext = "Loaded " + loadcount + "/" + loadtotal + " images";
+            // context.fillStyle = "#000000";
+            // context.font = "16px Verdana";
+            // context.fillText(loadtext, 18, 0.5 + canvas.height - 63);
             
             if (preloaded) {
                 // Add a delay for demonstration purposes
@@ -817,15 +818,15 @@ window.onload = function() {
         
         // Draw level background
         //TODO: start here to center the level
-        context.fillStyle = "#8c8c8c";
-        context.fillRect(level.x - 4, level.y - 4, level.width + 8, level.height + 4 - yoffset);
+        // context.fillStyle = "#8c8c8c";
+        // context.fillRect(level.x - 4, level.y - 4, level.width + 8, level.height + 4 - yoffset);
         
         // Render tiles
         renderTiles();
         
         // Draw level bottom
-        context.fillStyle = "#656565";
-        context.fillRect(level.x - 4, level.y - 4 + level.height + 4 - yoffset, level.width + 8, 2*level.tileheight + 3);
+        // context.fillStyle = "#656565";
+        // context.fillRect(level.x - 4, level.y - 4 + level.height + 4 - yoffset, level.width + 8, 2*level.tileheight + 3);
         
         // Draw score
         context.fillStyle = "#ffffff";
@@ -853,9 +854,10 @@ window.onload = function() {
         context.drawImage(buttonsImage, 0, 0, 97, 97, player.x - 6 * level.tilewidth, player.y, level.tilewidth, level.tileheight);
         context.drawImage(buttonsImage, 150, 0, 97, 97, player.x - 5 * level.tilewidth, player.y, level.tilewidth, level.tileheight);
         context.drawImage(buttonsImage, 300, 0, 97, 97, player.x - 4 * level.tilewidth, player.y, level.tilewidth, level.tileheight);
-        context.drawImage(wheelimage,charframe*50, 0, 50, 60, player.x + 2 * level.tilewidth, player.y, level.tilewidth*1.2, level.tileheight*1.2)
-        context.drawImage(wheelimage,charframe*50, (player.selectedSprite+1)*60, 50, 60, player.x + 2 * level.tilewidth, player.y, level.tilewidth*1.2, level.tileheight*1.2)
-
+        // context.drawImage(wheelimage,charframe*50, 0, 50, 60, player.x + 2 * level.tilewidth, player.y, level.tilewidth*1.2, level.tileheight*1.2)
+        // context.drawImage(wheelimage,charframe*50, (player.selectedSprite+1)*60, 50, 60, player.x + 2 * level.tilewidth, player.y, level.tilewidth*1.2, level.tileheight*1.2)
+		context.drawImage(wheelimage,charframe*50, 0, 50, 60, player.nextbubble.x, player.nextbubble.y, level.tilewidth*1.2, level.tileheight*1.2)
+        context.drawImage(wheelimage,charframe*50, (player.selectedSprite+1)*60, 50, 60, player.nextbubble.x, player.nextbubble.y, level.tilewidth*1.2, level.tileheight*1.2)
         // Game Over overlay
         if (gamestate == gamestates.gameover) {
             context.fillStyle = "rgba(0, 0, 0, 0.8)";
@@ -870,13 +872,16 @@ window.onload = function() {
     
     // Draw a frame around the game
     function drawFrame() {
-        // Draw background
-        context.fillStyle = "#e8eaec";
-        context.fillRect(0, 0, canvas.width, canvas.height);
+    	context.drawImage(frame,0,0,canvas.width,canvas.height);
+    	// Draw new frame
+    	// context.fillRect(0, 0, canvas.width, canvas.height);
+        // // Draw background
+        // context.fillStyle = "#e8eaec";
+        // context.fillRect(0, 0, canvas.width, canvas.height);
         
-        // Draw header
-        context.fillStyle = "#303030";
-        context.fillRect(0, 0, canvas.width, 79);
+        // // Draw header
+        // context.fillStyle = "#303030";
+        // context.fillRect(0, 0, canvas.width, 79);
         
         // Draw title
         context.fillStyle = "#ffffff";
@@ -979,7 +984,7 @@ window.onload = function() {
         context.stroke();
         
         // Draw the next bubble
-        drawBubble(player.nextbubble.x, player.nextbubble.y, player.nextbubble.tiletype);
+        drawBubble(player.x + 2 * level.tilewidth, player.y, player.nextbubble.tiletype);
         
         // Draw the bubble
         if (player.bubble.visible) {
