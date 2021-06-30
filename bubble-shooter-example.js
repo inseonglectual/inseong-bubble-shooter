@@ -872,7 +872,7 @@ window.onload = function() {
     
     // Draw a frame around the game
     function drawFrame() {
-    	context.drawImage(frame,0,0,508,650);
+    	context.drawImage(frame,0,0,600,770);
     	// Draw new frame
     	// context.fillRect(0, 0, canvas.width, canvas.height);
         // // Draw background
