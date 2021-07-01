@@ -173,11 +173,12 @@ window.onload = function() {
     // Initialize the game
     function init() {
         // Load images
-        images = loadImages(["inseong-bubble-sprites.png", "buttons.png","inseong-sprites.png","frame.png"]);
+        images = loadImages(["inseong-bubble-sprites.png", "buttons.png","inseong-sprites.png","frame.png", "wheel.png"]);
         bubbleimage = images[0];
         buttonsImage = images[1];
         wheelimage = images[2];
         frame = images[3];
+        actualwheel = images[4];
     
         // Add mouse events
         canvas.addEventListener("mousemove", onMouseMove);
@@ -846,6 +847,7 @@ window.onload = function() {
                 renderCluster(floatingclusters[i], col, col, col);
             }
         }
+        drawImageRot(actualwheel,player.bubble.x-239/2+level.tilewidth/2, player.bubble.y-239/2+level.tileheight/2, 239,239, 90-player.angle)
         
         // Render player bubble
         renderPlayer();
@@ -858,6 +860,7 @@ window.onload = function() {
         // context.drawImage(wheelimage,charframe*50, (player.selectedSprite+1)*60, 50, 60, player.x + 2 * level.tilewidth, player.y, level.tilewidth*1.2, level.tileheight*1.2)
 		context.drawImage(wheelimage,charframe*75, 0, 75, 85, player.nextbubble.x, player.nextbubble.y, 75, 85)
         context.drawImage(wheelimage,charframe*75, (player.selectedSprite+1)*85, 75, 85, player.nextbubble.x, player.nextbubble.y, 75, 85)
+
         // Game Over overlay
         if (gamestate == gamestates.gameover) {
             context.fillStyle = "rgba(0, 0, 0, 0.8)";
@@ -975,13 +978,13 @@ window.onload = function() {
                 charframecount = 0;
             }
         }
-        // Draw the angle
-        context.lineWidth = 2;
-        context.strokeStyle = "#0000ff";
-        context.beginPath();
-        context.moveTo(centerx, centery);
-        context.lineTo(centerx + 1.5*level.tilewidth * Math.cos(degToRad(player.angle)), centery - 1.5*level.tileheight * Math.sin(degToRad(player.angle)));
-        context.stroke();
+        // // Draw the angle
+        // context.lineWidth = 2;
+        // context.strokeStyle = "#0000ff";
+        // context.beginPath();
+        // context.moveTo(centerx, centery);
+        // context.lineTo(centerx + 1.5*level.tilewidth * Math.cos(degToRad(player.angle)), centery - 1.5*level.tileheight * Math.sin(degToRad(player.angle)));
+        // context.stroke();
         
         // Draw the next bubble
         drawBubble(player.x + 2 * level.tilewidth, player.y, player.nextbubble.tiletype);
@@ -1275,8 +1278,28 @@ window.onload = function() {
         //add selected tag to new sprite
         var tablecell = document.getElementById(sprite);
         tablecell.classList.add('selected');
-    }
+    };
     
+    function drawImageRot(img,x,y,width,height,deg){
+        // Store the current context state (i.e. rotation, translation etc..)
+        ctx = context
+        ctx.save()
+        console.log(deg)
+        //Convert degrees to radian 
+        var rad = deg * Math.PI / 180;
+    
+        //Set the origin to the center of the image
+        ctx.translate(x + width / 2, y + height / 2);
+    
+        //Rotate the canvas around the origin
+        ctx.rotate(rad);
+        
+        //draw the image    
+        ctx.drawImage(img,width / 2 * (-1),height / 2 * (-1),width,height);
+    
+        // Restore canvas state as saved from above
+        ctx.restore();
+    };
     // Call init to start the game
     init();
 };
