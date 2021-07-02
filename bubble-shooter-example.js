@@ -1199,7 +1199,8 @@ window.onload = function() {
     function onMouseDown(e) {
         // Get the mouse position
         var pos = getMousePos(canvas, e);
-        console.log(pos)
+        console.log(pos.x, pos.y);
+        console.log(e.clientX,e.clientY)
         if (isInside(pos,directionButtons["leftButton"])) {
             console.log("left")
             mousedownleft = true;
