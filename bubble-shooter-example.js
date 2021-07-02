@@ -1188,7 +1188,8 @@ window.onload = function() {
         // player.angle = mouseangle;
     }
     function onTouchStart(e){
-        console.log("Touch started");
+        e.clientX = e.touches[0].clientX;
+        e.clientY = e.touches[0].clientY;
         onMouseDown(e);
     }
     function onTouchEnd(e){
