@@ -28,9 +28,7 @@ window.onload = function() {
     console.log("is mobile?", IS_MOBILE)
     
     // Number of sprites
-    var numberSprites = 7;
-    var selecttable = document.getElementById("selecttable");
-    createSpriteSelect(selecttable);
+    var numberSprites = 8;
     
     // Timing and frames per second
     var lastframe = 0;
@@ -226,6 +224,16 @@ window.onload = function() {
     		height: 80
     	}
     	}
+        playerButtons = {}
+        for (var i=0; i<8; i++){
+            playerButtons[i] = {
+                x: 505,
+                y: 82+i*86,
+                width: 95,
+                height: 86
+            }
+
+        }
         
         // New game
         newGame();
@@ -1215,6 +1223,11 @@ window.onload = function() {
         } else if (gamestate == gamestates.gameover) {
             newGame();
         }
+        for (var i=0;i<8;i++){
+            if (isInside(pos,playerButtons[i])){
+                player.selectedSprite = i;
+            }
+        }
     }
 
     function onMouseUp(e) {
@@ -1238,37 +1251,6 @@ window.onload = function() {
         };
     }
 
-    function createSpriteSelect(table) {
-        var row = table.insertRow(0);
-        console.log("hi");
-        console.log("is mobile2?", IS_MOBILE)
-        for (i=0;i<numberSprites;i++){
-            var cell1 = row.insertCell(i);
-            cell1.innerHTML = i;
-            cell1.addEventListener('click', function(e) {
-                selectSprite(this.id)
-            }, false);
-            cell1.id = "Sprite" + i.toString();
-            if (i == 0){
-                cell1.classList.add('selected');
-            }
-            console.log(cell1)
-        }
-      }
-    
-    function selectSprite(sprite){
-        //remove selected sprite from previous sprite
-        previousSprite = document.getElementById("Sprite" + player.selectedSprite.toString());
-        previousSprite.classList.remove('selected');
-
-        //get new sprite from given id
-        var selectedSprite = parseInt(sprite.substring(6));
-        player.selectedSprite = selectedSprite;
-
-        //add selected tag to new sprite
-        var tablecell = document.getElementById(sprite);
-        tablecell.classList.add('selected');
-    };
     
     function drawImageRot(img,x,y,width,height,deg){
         // Store the current context state (i.e. rotation, translation etc..)
