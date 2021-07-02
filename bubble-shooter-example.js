@@ -1120,6 +1120,7 @@ window.onload = function() {
     // Shoot the bubble
     function shootBubble() {
         // Shoot the bubble in the direction of the mouse
+        console.log("Player Angle", player.angle)
         player.bubble.x = player.x;
         player.bubble.y = player.y;
         player.bubble.angle = player.angle;
@@ -1211,6 +1212,7 @@ window.onload = function() {
         }
         else if (isInside(pos,directionButtons["shootButton"])) {
             if (gamestate != gamestates.shootbubble){
+                console.log("Shoot",)
                 shootBubble();
                 player.angle = 90;
                 charframe = 0;
