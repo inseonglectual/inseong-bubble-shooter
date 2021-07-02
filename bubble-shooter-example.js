@@ -182,7 +182,8 @@ window.onload = function() {
         canvas.addEventListener("mousemove", onMouseMove);
         canvas.addEventListener("mousedown", onMouseDown);
         canvas.addEventListener("touchstart", onTouchStart);
-        canvas.addEventListener("touchend", onMouseUp);
+        canvas.addEventListener("touchend", onTouchEnd);
+        canvas.addEventListener("mouseup", onMouseUp);
         
         // Initialize the two-dimensional tile array
         for (var i=0; i<level.columns; i++) {
@@ -1188,6 +1189,10 @@ window.onload = function() {
     }
     function onTouchStart(e){
         console.log("Touch started");
+        onMouseDown(e);
+    }
+    function onTouchEnd(e){
+        console.log("Touch ended");
         onMouseDown(e);
     }
     // On mouse button click
