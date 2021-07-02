@@ -1190,11 +1190,12 @@ window.onload = function() {
     function onTouchStart(e){
         e.clientX = e.touches[0].clientX;
         e.clientY = e.touches[0].clientY;
+        console.log("Touching",e.clientX,e.clientY)
         onMouseDown(e);
     }
     function onTouchEnd(e){
         console.log("Touch ended");
-        onMouseDown(e);
+        onMouseUp(e);
     }
     // On mouse button click
     function onMouseDown(e) {
