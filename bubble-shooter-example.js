@@ -841,11 +841,9 @@ window.onload = function() {
         
         // Draw score
         context.fillStyle = "#ffca82";
-        context.font = "18px Portico";
         var scorex = level.x + level.width - 150;
         var scorey = level.y+level.height + level.tileheight - yoffset - 8;
-        drawCenterText("Score:", scorex, scorey, 150);
-        context.font = "24px Portico";
+        context.font = "24px Kanit";
         drawCenterText(score, scorex, scorey+30, 150);
 
         // Render cluster
