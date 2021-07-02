@@ -1199,6 +1199,7 @@ window.onload = function() {
     function onMouseDown(e) {
         // Get the mouse position
         var pos = getMousePos(canvas, e);
+        console.log(pos)
         if (isInside(pos,directionButtons["leftButton"])) {
             console.log("left")
             mousedownleft = true;
@@ -1265,7 +1266,6 @@ window.onload = function() {
         // Store the current context state (i.e. rotation, translation etc..)
         ctx = context
         ctx.save()
-        console.log(deg)
         //Convert degrees to radian 
         var rad = deg * Math.PI / 180;
     
