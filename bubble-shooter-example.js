@@ -313,6 +313,7 @@ window.onload = function() {
         // Bubble is moving
         
         // Move the bubble in the direction of the mouse
+        console.log(player.bubble.angle)
         player.bubble.x += dt * player.bubble.speed * Math.cos(degToRad(player.bubble.angle));
         player.bubble.y += dt * player.bubble.speed * -1*Math.sin(degToRad(player.bubble.angle));
         
@@ -573,7 +574,6 @@ window.onload = function() {
                 }
                 cluster = findCluster(gridpos.x, gridpos.y, true, true, false);
             } else if (player.bubble.tiletype == 13){
-                console.log(level.tiles)
                 for (var i=0; i<level.columns; i++) {
                     for (var j=2; j<level.rows-1; j++) {
                         level.tiles[i][j-2].type = level.tiles[i][j].type;
@@ -953,7 +953,6 @@ window.onload = function() {
         // context.stroke();
 
         if (mousedownright == true){
-            console.log("moving right") 
             player.angle = Math.max(8, player.angle-.5);
             charframecount++;
             if (charframecount == 20) {
@@ -970,7 +969,6 @@ window.onload = function() {
             }
         }
         if (mousedownleft == true){
-            console.log("moving left") 
             player.angle = Math.min(172, player.angle+.5);
             charframecount++;
             if (charframecount == 20) {
