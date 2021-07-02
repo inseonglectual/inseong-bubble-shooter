@@ -847,7 +847,7 @@ window.onload = function() {
                 renderCluster(floatingclusters[i], col, col, col);
             }
         }
-        drawImageRot(actualwheel,player.bubble.x-239/2+level.tilewidth/2, player.bubble.y-239/2+level.tileheight/2, 239,239, 90-player.angle)
+        drawImageRot(actualwheel,level.x + level.width/2 - level.tilewidth/2-239/2+level.tilewidth/2, level.y+level.height-239/2+level.tileheight/2, 239,239, 90-player.angle)
         
         // Render player bubble
         renderPlayer();
