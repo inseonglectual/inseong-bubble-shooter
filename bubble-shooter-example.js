@@ -208,22 +208,22 @@ window.onload = function() {
 
         directionButtons = {
     	leftButton: {
-    		x: player.x - 6 * level.tilewidth,
-    		y: player.y,
-    		width: level.tilewidth,
-    		height: level.tileheight
+    		x:77,
+    		y: 673,
+    		width: 70,
+    		height: 80
     		},
     	shootButton: {
-    		x: player.x - 5 * level.tilewidth,
-    		y: player.y,
-    		width: level.tilewidth,
-    		height: level.tileheight
+    		x: 218,
+    		y: 673,
+    		width: 70,
+    		height: 80
     		},
     	rightButton: {
-    		x: player.x - 4 * level.tilewidth,
-    		y: player.y,
-    		width: level.tilewidth,
-    		height: level.tileheight
+    		x: 359,
+    		y: 673,
+    		width: 70,
+    		height: 80
     	}
     	}
         
@@ -830,12 +830,12 @@ window.onload = function() {
         // context.fillRect(level.x - 4, level.y - 4 + level.height + 4 - yoffset, level.width + 8, 2*level.tileheight + 3);
         
         // Draw score
-        context.fillStyle = "#ffffff";
-        context.font = "18px Verdana";
+        context.fillStyle = "#ffca82";
+        context.font = "18px Portico";
         var scorex = level.x + level.width - 150;
         var scorey = level.y+level.height + level.tileheight - yoffset - 8;
         drawCenterText("Score:", scorex, scorey, 150);
-        context.font = "24px Verdana";
+        context.font = "24px Portico";
         drawCenterText(score, scorex, scorey+30, 150);
 
         // Render cluster
@@ -852,12 +852,7 @@ window.onload = function() {
         // Render player bubble
         renderPlayer();
 
-        //draw buttons in bottom left corner
-        context.drawImage(buttonsImage, 0, 0, 97, 97, player.x - 6 * level.tilewidth, player.y, level.tilewidth, level.tileheight);
-        context.drawImage(buttonsImage, 150, 0, 97, 97, player.x - 5 * level.tilewidth, player.y, level.tilewidth, level.tileheight);
-        context.drawImage(buttonsImage, 300, 0, 97, 97, player.x - 4 * level.tilewidth, player.y, level.tilewidth, level.tileheight);
-        // context.drawImage(wheelimage,charframe*50, 0, 50, 60, player.x + 2 * level.tilewidth, player.y, level.tilewidth*1.2, level.tileheight*1.2)
-        // context.drawImage(wheelimage,charframe*50, (player.selectedSprite+1)*60, 50, 60, player.x + 2 * level.tilewidth, player.y, level.tilewidth*1.2, level.tileheight*1.2)
+        //draw wheel
 		context.drawImage(wheelimage,charframe*75, 0, 75, 85, player.nextbubble.x, player.nextbubble.y, 75, 85)
         context.drawImage(wheelimage,charframe*75, (player.selectedSprite+1)*85, 75, 85, player.nextbubble.x, player.nextbubble.y, 75, 85)
 
@@ -885,11 +880,6 @@ window.onload = function() {
         // // Draw header
         // context.fillStyle = "#303030";
         // context.fillRect(0, 0, canvas.width, 79);
-        
-        // Draw title
-        context.fillStyle = "#ffffff";
-        context.font = "24px Verdana";
-        context.fillText("Inseong Bubble Blast", 10, 37);
         
         // // Display fps
         // context.fillStyle = "#ffffff";
