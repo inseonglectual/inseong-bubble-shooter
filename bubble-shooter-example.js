@@ -181,7 +181,7 @@ window.onload = function() {
         // Add mouse events
         canvas.addEventListener("mousemove", onMouseMove);
         canvas.addEventListener("mousedown", onMouseDown);
-        canvas.addEventListener("touchstart", onMouseDown);
+        canvas.addEventListener("touchstart", onTouchStart);
         canvas.addEventListener("touchend", onMouseUp);
         
         // Initialize the two-dimensional tile array
@@ -1186,7 +1186,10 @@ window.onload = function() {
         // // Set the player angle
         // player.angle = mouseangle;
     }
-    
+    function onTouchStart(e){
+        console.log("Touch started");
+        onMouseDown(e);
+    }
     // On mouse button click
     function onMouseDown(e) {
         // Get the mouse position
