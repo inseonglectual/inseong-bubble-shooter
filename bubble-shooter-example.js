@@ -1210,9 +1210,11 @@ window.onload = function() {
             }
         }
         else if (isInside(pos,directionButtons["shootButton"])) {
-        	shootBubble();
-        	player.angle = 90;
-            charframe = 0;
+            if (gamestate != gamestates.shootbubble){
+                shootBubble();
+                player.angle = 90;
+                charframe = 0;
+            }
         }
         else if (isInside(pos,directionButtons["rightButton"])) {
             console.log("right")
