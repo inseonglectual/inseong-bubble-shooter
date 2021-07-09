@@ -35,7 +35,7 @@ window.onload = function() {
     var fpstime = 0;
     var framecount = 0;
     var fps = 0;
-    var scale_factor = window.innerHeight/770;//.5;
+    
     var initialized = false;
     
     // Level
@@ -177,8 +177,6 @@ window.onload = function() {
         wheelimage = images[2];
         frame = images[3];
         actualwheel = images[4];
-        canvas.height = 770*scale_factor
-        canvas.width = 600*scale_factor
     
         // Add mouse events
         canvas.addEventListener("mousemove", onMouseMove);
@@ -186,7 +184,6 @@ window.onload = function() {
         canvas.addEventListener("touchstart", onTouchStart);
         canvas.addEventListener("touchend", onTouchEnd);
         canvas.addEventListener("mouseup", onMouseUp);
-        window.onresize = resizeCanvas;
         
         // Initialize the two-dimensional tile array
         for (var i=0; i<level.columns; i++) {
@@ -240,7 +237,6 @@ window.onload = function() {
 
         }
         
-        context.scale(scale_factor,scale_factor);
         // New game
         newGame();
         
@@ -1255,16 +1251,8 @@ window.onload = function() {
         charframecount = 19;
     }
 
-    function resizeCanvas(){
-        console.log("resizing")
-        var new_scale_factor = window.innerHeight/770
-        context.scale(new_scale_factor/scale_factor,new_scale_factor/scale_factor)
-        scale_factor = new_scale_factor
-        canvas.height = window.innerHeight
-        canvas.width = 660*new_scale_factor
-    }
     function isInside(pos, rect){
-    	return pos.x > rect.x*scale_factor && pos.x < (rect.x+rect.width)*scale_factor && pos.y < (rect.y+rect.height)*scale_factor && pos.y > rect.y*scale_factor
+    	return pos.x > rect.x && pos.x < rect.x+rect.width && pos.y < rect.y+rect.height && pos.y > rect.y
 	}
     
     // Get the mouse position
