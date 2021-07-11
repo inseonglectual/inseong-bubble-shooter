@@ -21,7 +21,12 @@
 // The function gets called when the window is fully loaded
 window.onload = function() {
     // Get the canvas and context
+    var startscreen = document.getElementById("startscreen");
+    var startscreencontext = startscreen.getContext("2d");
     var canvas = document.getElementById("viewport");
+    var gifs = document.getElementsByClassName("gif");
+    var endscreen = document.getElementById("endscreen");
+    var gifnum = 0;
     var context = canvas.getContext("2d");
     var IS_IOS = /iPad|iPhone|iPod/.test(window.navigator.platform);
     var IS_MOBILE = /Android/.test(window.navigator.userAgent) || IS_IOS;
@@ -35,8 +40,10 @@ window.onload = function() {
     var fpstime = 0;
     var framecount = 0;
     var fps = 0;
-    var scale_factor = window.innerHeight/770;//.5;
+    
+    var releaseDate = Date.parse('2021-07-12T00:00:00+09:00');
     var initialized = false;
+    var winThreshold = 712
     
     // Level
     var level = {
@@ -99,8 +106,9 @@ window.onload = function() {
 
     
     // Game states
-    var gamestates = { init: 0, ready: 1, shootbubble: 2, removecluster: 3, gameover: 4 };
-    var gamestate = gamestates.init;
+    var gamestates = { init: 0, ready: 1, shootbubble: 2, removecluster: 3, gameover: 4, win: 5, startscreen: 6, displaygif: 7};
+    var gamestate = gamestates.startscreen;
+    var playable = true;
     
     // Score
     var score = 0;
@@ -123,6 +131,11 @@ window.onload = function() {
     var bubbleimage;
     var buttonsImage;
     var wheelimage;
+    var actualwheel;
+    var frame;
+    var preview;
+    var locked;
+    
 
     //MouseDownStates
     var mousedownright;
@@ -134,6 +147,8 @@ window.onload = function() {
     var loadcount = 0;
     var loadtotal = 0;
     var preloaded = false;
+
+    var unlockIndex = 2;
     
     // Load images
     function loadImages(imagefiles) {
@@ -171,14 +186,16 @@ window.onload = function() {
     // Initialize the game
     function init() {
         // Load images
-        images = loadImages(["inseong-bubble-sprites.png", "buttons.png","inseong-sprites.png","frame.png", "wheel.png"]);
+        images = loadImages(["inseong-bubble-sprites.png", "buttons.png","inseong-sprites.png", "wheel.png","frame.png","arcade-machine-preview.png","locked.png", "arcade-machine.png", "background.png"]);
         bubbleimage = images[0];
         buttonsImage = images[1];
         wheelimage = images[2];
-        frame = images[3];
-        actualwheel = images[4];
-        canvas.height = 770*scale_factor
-        canvas.width = 600*scale_factor
+        actualwheel = images[3];
+        frame = images[4];
+        preview = images[5];
+        locked = images[6];
+        arcadeMachine = images[7];
+        background = images[8];
     
         // Add mouse events
         canvas.addEventListener("mousemove", onMouseMove);
@@ -186,7 +203,12 @@ window.onload = function() {
         canvas.addEventListener("touchstart", onTouchStart);
         canvas.addEventListener("touchend", onTouchEnd);
         canvas.addEventListener("mouseup", onMouseUp);
-        window.onresize = resizeCanvas;
+        startscreen.addEventListener("mousedown", onStartScreenMousedown);
+        for (var i=0; i<5; i++){
+            gifs[i].addEventListener("mousedown", onGifMouseDown)
+        }
+        endscreen.addEventListener("mousedown", onMouseDown);
+        
         
         // Initialize the two-dimensional tile array
         for (var i=0; i<level.columns; i++) {
@@ -240,7 +262,6 @@ window.onload = function() {
 
         }
         
-        context.scale(scale_factor,scale_factor);
         // New game
         newGame();
         
@@ -252,12 +273,21 @@ window.onload = function() {
     function main(tframe) {
         // Request animation frames
         window.requestAnimationFrame(main);
-    
-        if (!initialized) {
+        if ( Date.now()<releaseDate && playable == false){
+            context.clearRect(0, 0, window.innerWidth,window.innerHeight);
+            document.body.style.backgroundColor = "transparent";
+            document.body.style.backgroundImage = "url('background.png')";
+            canvas.height = document.documentElement.clientHeight;
+            canvas.width = document.documentElement.clientWidth;
+            machineWidth = 0.675*(document.documentElement.clientHeight*0.85);
+            context.drawImage(preview,(document.documentElement.clientWidth/2)-(machineWidth/2),0,machineWidth,document.documentElement.clientHeight);
+        } else {
+
+            if (!initialized) {
             // Preloader
             
             // Clear the canvas
-            context.clearRect(0, 0, canvas.width, canvas.height);
+            context.clearRect(0, 0, document.documentElement.clientWidth, document.documentElement.clientWidth);
             
             // Draw the frame
             drawFrame();
@@ -278,12 +308,23 @@ window.onload = function() {
             
             if (preloaded) {
                 // Add a delay for demonstration purposes
-                setTimeout(function(){initialized = true;}, 1000);
+                setTimeout(function(){initialized = true;}, 0);
             }
         } else {
             // Update and render the game
+            context.clearRect(0, 0, document.documentElement.clientWidth, document.documentElement.clientWidth);
             update(tframe);
             render();
+            }
+        if(gamestate == gamestates.startscreen){
+            canvas.style.display = "none";
+            document.body.style.backgroundColor = "transparent";
+            document.body.style.backgroundImage = "url('background.png')";
+            startscreen.height = document.documentElement.clientHeight;
+            startscreen.width = document.documentElement.clientWidth;
+            machineWidth = 0.675*(document.documentElement.clientHeight*0.85);
+            startscreencontext.drawImage(arcadeMachine,(document.documentElement.clientWidth/2)-(machineWidth/2),0,machineWidth,document.documentElement.clientHeight);
+        }
         }
     }
     
@@ -378,7 +419,7 @@ window.onload = function() {
             }
             
             // Add cluster score
-            score += cluster.length * 100;
+            score += cluster.length * 4;
             
             // Find floating clusters
             floatingclusters = findFloatingClusters();
@@ -392,7 +433,7 @@ window.onload = function() {
                         tile.shift = 1;
                         tile.velocity = player.bubble.dropspeed;
                         
-                        score += 100;
+                        score += 4;
                     }
                 }
             }
@@ -465,13 +506,22 @@ window.onload = function() {
                         }
                     }
                 }
-                
-                if (tilefound) {
+                if (score >= winThreshold) {
+                    setGameState(gamestates.win);
+                    winThreshold = 999999;
+                } else if (tilefound) {
                     setGameState(gamestates.ready);
                 } else {
                     // No tiles left, game over
-                    setGameState(gamestates.gameover);
+                    setGameState(gamestates.win);
                 }
+            }
+            if (score > 450) {
+                unlockIndex = 8;
+            } else if (score > 300) {
+                unlockIndex = 6;
+            } else if (score > 150) {
+                unlockIndex = 4;
             }
         }
     }
@@ -531,18 +581,18 @@ window.onload = function() {
             //TODO: special tile function here
             //all touching: call GetNeighbors();
             if (player.bubble.tiletype == 7){
-                for (var i=0;i<level.columns;i++){
-                    if (level.tiles[i][gridpos.y].type>=0){
-                        cluster.push(level.tiles[i][gridpos.y]);
-                    }
-                }
-            } else if (player.bubble.tiletype == 8){
                 if (intersectx != -1){
                     level.tiles[gridpos.x][gridpos.y].type = level.tiles[intersectx][intersecty].type
                     cluster = findCluster(gridpos.x, gridpos.y, true, true, false);
                 }
                 else {
                     level.tiles[gridpos.x][gridpos.y].type =  getExistingColor();
+                }
+            } else if (player.bubble.tiletype == 8){
+                for (var i=0;i<level.columns;i++){
+                    if (level.tiles[i][gridpos.y].type>=0){
+                        cluster.push(level.tiles[i][gridpos.y]);
+                    }
                 }
             } else if (player.bubble.tiletype == 9){
                 if (intersectx != -1){
@@ -551,7 +601,20 @@ window.onload = function() {
                     level.tiles[gridpos.x][gridpos.y].type = getExistingColor();
                 }
             } else if (player.bubble.tiletype == 10){
-                if (intersectx != -1){
+                neighbors = getNeighbors(level.tiles[gridpos.x][gridpos.y]);
+                newcolor = getExistingColor();
+                level.tiles[gridpos.x][gridpos.y].type = newcolor;
+                //remove changing neighbor color
+                // for (var i=0; i<neighbors.length; i++) {
+                //     if (neighbors[i].type != -1){
+                //         neighbors[i].type = newcolor;
+                //     }
+                // }
+                cluster = findCluster(gridpos.x, gridpos.y, true, true, false);
+            } else if(player.bubble.tiletype == 11) {
+                cluster = getNeighbors(level.tiles[gridpos.x][gridpos.y]);
+            } else if(player.bubble.tiletype == 12) {
+                 if (intersectx != -1){
                     removedcolor = level.tiles[intersectx][intersecty].type;
                     level.tiles[gridpos.x][gridpos.y].type = removedcolor;
                     for (var i=0; i<level.columns; i++) {
@@ -565,32 +628,34 @@ window.onload = function() {
                 else {
                     level.tiles[gridpos.x][gridpos.y].type =  getExistingColor();
                 }
-            } else if(player.bubble.tiletype == 11) {
-                cluster = getNeighbors(level.tiles[gridpos.x][gridpos.y]);
-            } else if(player.bubble.tiletype == 12) {
-                neighbors = getNeighbors(level.tiles[gridpos.x][gridpos.y]);
-                newcolor = getExistingColor();
-                level.tiles[gridpos.x][gridpos.y].type = newcolor;
-                for (var i=0; i<neighbors.length; i++) {
-                    if (neighbors[i].type != -1){
-                        neighbors[i].type = newcolor;
-                    }
-                }
-                cluster = findCluster(gridpos.x, gridpos.y, true, true, false);
             } else if (player.bubble.tiletype == 13){
                 for (var i=0; i<level.columns; i++) {
                     for (var j=2; j<level.rows-1; j++) {
                         level.tiles[i][j-2].type = level.tiles[i][j].type;
                     }
                 }
-                cluster = [level.tiles[gridpos.x][gridpos.y-2]]
+                if ((gridpos.y)>=2) {
+                    cluster = [level.tiles[gridpos.x][gridpos.y-2]]
+                } else {
+                    setGameState(gamestates.win);
+                }
+            } else if (player.bubble.tiletype == 14){
+                gifs[gifnum].style.display = 'inline-block';
+                giftag = gifs[gifnum].getElementsByTagName('img')[0];
+                gifs[gifnum].style.top = document.documentElement.clientHeight/2 - giftag.height/2;
+                wid = document.documentElement.clientWidth/2 - giftag.width/2;
+                gifs[gifnum].style.left = `${wid}px`;
+                
+                cluster = [level.tiles[gridpos.x][gridpos.y]];
+                setGameState(gamestates.displaygif);
+                return;
             }
             else {
             // Find clusters
                 cluster = findCluster(gridpos.x, gridpos.y, true, true, false);
             }
              
-            if (cluster.length >= 3 || player.bubble.tiletype == 7 || player.bubble.tiletype == 9 || player.bubble.tiletype == 10 || player.bubble.tiletype == 11 || player.bubble.tiletype == 12 || player.bubble.tiletype == 13) {
+            if (cluster.length >= 3 || player.bubble.tiletype == 8 || player.bubble.tiletype == 9 || player.bubble.tiletype == 10 || player.bubble.tiletype == 11 || player.bubble.tiletype == 12 || player.bubble.tiletype == 13 || player.bubble.tiletype == 14) {
                 // Remove the cluster
                 setGameState(gamestates.removecluster);
                 return;
@@ -599,7 +664,7 @@ window.onload = function() {
         
         // No clusters found
         turncounter++;
-        if (turncounter >= 5) {
+        if (turncounter >= 4) {
             // Add a row of bubbles
             addBubbles();
             turncounter = 0;
@@ -828,6 +893,10 @@ window.onload = function() {
     function render() {
         // Draw the frame around the game
         drawFrame();
+        for (var i=unlockIndex;i<8;i++){
+            var playerposition = playerButtons[i];
+            context.drawImage(locked,playerposition.x, playerposition.y-5, playerposition.width, playerposition.height);
+        }
         
         var yoffset =  level.tileheight/2;
         
@@ -877,11 +946,20 @@ window.onload = function() {
             context.font = "24px Verdana";
             drawCenterText("Game Over!", level.x, level.y + level.height / 2 + 10, level.width);
             drawCenterText("Click to start", level.x, level.y + level.height / 2 + 40, level.width);
+        } else if (gamestate == gamestates.win) {
+            endscreen.style.display = 'inline-block';
+            endscreentag = endscreen.getElementsByTagName('img')[0];
+            endscreen.style.top = document.documentElement.clientHeight/2 - endscreentag.height/2;
+            wid = document.documentElement.clientWidth/2 - endscreentag.width/2;
+            endscreen.style.left = `${wid}px`;
         }
     }
     
     // Draw a frame around the game
     function drawFrame() {
+        context.clearRect(0, 0, window.innerWidth,window.innerHeight);
+        document.backgroundColor = "black";
+        document.backgroundImage = "";
     	context.drawImage(frame,0,0,600,770);
     	// Draw new frame
     	// context.fillRect(0, 0, canvas.width, canvas.height);
@@ -1041,9 +1119,10 @@ window.onload = function() {
         turncounter = 0;
         rowoffset = 0;
         
-        // Set the gamestate to ready
-        setGameState(gamestates.ready);
-        
+        // Set the gamestate to start screen
+        setGameState(gamestates.startscreen);
+        startscreen.style.display = "block";
+
         // Create the level
         createLevel();
 
@@ -1198,13 +1277,52 @@ window.onload = function() {
         console.log("Touch ended");
         onMouseUp(e);
     }
+    function onStartScreenMousedown(e) {
+        if(gamestate == gamestates.startscreen){
+            setGameState(gamestates.ready);
+            startscreencontext.clearRect(0,0,document.documentElement.clientWidth,document.documentElement.clientHeight);
+            startscreen.style.display = "none";
+            canvas.style.display = "block";
+        }
+    }
+
+    function onGifMouseDown(e) {
+        gifs[gifnum].style.display = 'none';
+        gifnum = (gifnum + 1)%5;
+        setGameState(gamestates.removecluster);
+    }
+
     // On mouse button click
     function onMouseDown(e) {
         // Get the mouse position
         var pos = getMousePos(canvas, e);
         console.log(pos.x, pos.y);
         console.log(e.clientX,e.clientY)
-        if (isInside(pos,directionButtons["leftButton"])) {
+        if (gamestate == gamestates.gameover) {
+            newGame();
+        } else if (gamestate == gamestates.win) {
+            endscreen.style.display = 'none';
+
+            var tilefound = false
+            for (var i=0; i<level.columns; i++) {
+                for (var j=0; j<level.rows; j++) {
+                    if (level.tiles[i][j].type != -1) {
+                        tilefound = true;
+                        break;
+                    }
+                }
+            }
+
+            if (!tilefound) {
+                createLevel();
+            }
+            setGameState(gamestates.ready)
+        } else if (gamestate == gamestates.displaygif){
+            gifs[gifnum].style.display = 'none';
+            gifnum = (gifnum + 1)%5;
+            setGameState(gamestates.removecluster);
+        }
+        else if (isInside(pos,directionButtons["leftButton"])) {
             console.log("left")
             mousedownleft = true;
             if (IS_MOBILE) {
@@ -1237,10 +1355,8 @@ window.onload = function() {
                 };
             }
         	//player.angle = Math.max(8, player.angle-2);
-        } else if (gamestate == gamestates.gameover) {
-            newGame();
-        }
-        for (var i=0;i<8;i++){
+        } 
+        for (var i=0;i<unlockIndex;i++){
             if (isInside(pos,playerButtons[i])){
                 player.selectedSprite = i;
             }
@@ -1255,16 +1371,8 @@ window.onload = function() {
         charframecount = 19;
     }
 
-    function resizeCanvas(){
-        console.log("resizing")
-        var new_scale_factor = window.innerHeight/770
-        context.scale(new_scale_factor/scale_factor,new_scale_factor/scale_factor)
-        scale_factor = new_scale_factor
-        canvas.height = window.innerHeight
-        canvas.width = 660*new_scale_factor
-    }
     function isInside(pos, rect){
-    	return pos.x > rect.x*scale_factor && pos.x < (rect.x+rect.width)*scale_factor && pos.y < (rect.y+rect.height)*scale_factor && pos.y > rect.y*scale_factor
+    	return pos.x > rect.x && pos.x < rect.x+rect.width && pos.y < rect.y+rect.height && pos.y > rect.y
 	}
     
     // Get the mouse position
@@ -1297,5 +1405,11 @@ window.onload = function() {
         ctx.restore();
     };
     // Call init to start the game
-    init();
+ //   if (Date.now() > releaseDate){
+        init();
+   // }
+   // else{
+   //     frame = loadImages(["frame.png"])[0]
+   //     drawFrame();
+   // }
 };
