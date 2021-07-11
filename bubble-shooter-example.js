@@ -655,7 +655,7 @@ window.onload = function() {
                 cluster = findCluster(gridpos.x, gridpos.y, true, true, false);
             }
              
-            if (cluster.length >= 3 || player.bubble.tiletype == 8 || player.bubble.tiletype == 9 || player.bubble.tiletype == 10 || player.bubble.tiletype == 11 || player.bubble.tiletype == 12 || player.bubble.tiletype == 13 || player.bubble.tiletype == 14) {
+            if (cluster.length >= 3 || player.bubble.tiletype == 8 || player.bubble.tiletype == 9 || player.bubble.tiletype == 11 || player.bubble.tiletype == 12 || player.bubble.tiletype == 13 || player.bubble.tiletype == 14) {
                 // Remove the cluster
                 setGameState(gamestates.removecluster);
                 return;
