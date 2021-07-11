@@ -25,7 +25,7 @@ window.onload = function() {
     var startscreencontext = startscreen.getContext("2d");
     var canvas = document.getElementById("viewport");
     var gifs = document.getElementsByClassName("gif");
-    var closebutton = document.getElementById("close");
+    // var closebutton = document.getElementById("close");
     var endscreen = document.getElementById("endscreen");
     var gifnum = 0;
     var context = canvas.getContext("2d");
@@ -209,7 +209,7 @@ window.onload = function() {
             gifs[i].addEventListener("mousedown", onGifMouseDown)
         }
         endscreen.addEventListener("mousedown", onMouseDown);
-        closebutton.addEventListener("mousedown", onGifMouseDown)
+        // closebutton.addEventListener("mousedown", onGifMouseDown)
 
 
         // Initialize the two-dimensional tile array
@@ -647,7 +647,7 @@ window.onload = function() {
                 gifs[gifnum].style.top = document.documentElement.clientHeight/2 - giftag.height/2;
                 wid = document.documentElement.clientWidth/2 - giftag.width/2;
                 gifs[gifnum].style.left = `${wid}px`;
-                closebutton.style.display = 'inline-block';
+                // closebutton.style.display = 'inline-block';
 
                 cluster = [level.tiles[gridpos.x][gridpos.y]];
                 setGameState(gamestates.displaygif);
@@ -1291,7 +1291,7 @@ window.onload = function() {
 
     function onGifMouseDown(e) {
         gifs[gifnum].style.display = 'none';
-        closebutton.style.display = 'none';
+        // closebutton.style.display = 'none';
         gifnum = (gifnum + 1)%5;
         setGameState(gamestates.removecluster);
     }
@@ -1323,7 +1323,7 @@ window.onload = function() {
             setGameState(gamestates.ready)
         } else if (gamestate == gamestates.displaygif){
             gifs[gifnum].style.display = 'none';
-            closebutton.style.display = 'none';
+            // closebutton.style.display = 'none';
             gifnum = (gifnum + 1)%5;
             setGameState(gamestates.removecluster);
         }
